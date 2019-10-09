@@ -1,0 +1,4 @@
+{
+  "GetUserInfo": "getUserInformationByUniUser",
+  "GetToken": "getBotTokenByBotName"
+}
