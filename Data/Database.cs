@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Diagnostics;
 using System.Text;
 using DevNet.Interfaces;
+using DevNet.Services;
 using MySql.Data.MySqlClient;
 
 namespace DevNet.Data
@@ -15,11 +16,12 @@ namespace DevNet.Data
     public class Database : IDatabase
     {
         #region Instances
+        //private static ConfigurationBuilders confBuilder = null;
         private static Database instance = null;
         #endregion
 
         #region Attributes
-        private static readonly string mySqlConnString = ConfigurationManager.ConnectionStrings["CelestialError"].ConnectionString;
+        private static readonly string mySqlConnString = ConfigurationManager.ConnectionStrings["CelestialError"]?.ConnectionString;
         private MySqlConnection mySqlConn;
         #endregion
 

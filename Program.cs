@@ -9,6 +9,7 @@ using DevNet.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Discord.Commands;
 using Discord.Addons.Interactive;
+using System.Configuration;
 
 namespace DevNet
 {
@@ -17,9 +18,11 @@ namespace DevNet
     /// </summary>
     public class Program
     {
+        internal static ConfigurationBuilders confBuilder;
+
         // Setup our fields
         private readonly IConfiguration config;
-        private DiscordSocketClient client = new DiscordSocketClient();
+        private DiscordSocketClient client;
         private static string logLevel;
 
         /// <summary>
@@ -50,6 +53,14 @@ namespace DevNet
                 .AddJsonFile(path: "config.json");
 
             config = builder.Build();
+
+            confBuilder = new ConfigurationBuilders
+            {
+                ConnString = ConfigurationManager.ConnectionStrings["CelestialError"]?.ConnectionString,
+                SmsMessageKey = ConfigurationManager.AppSettings["SmsMessageKey"],
+                BotToken = ConfigurationManager.AppSettings["DiscordBotToken"],
+                BotPrefix = ConfigurationManager.AppSettings["CommandPrefix"]
+            };            
         }
 
         /// <summary>
@@ -62,13 +73,20 @@ namespace DevNet
         {
             using (ServiceProvider services = ConfigureServices())
             {
+                var socketConfig = new DiscordSocketConfig
+                {
+                    ExclusiveBulkDelete = true
+                };
+                client = new DiscordSocketClient(socketConfig);
+
                 var getClient = services.GetRequiredService<DiscordSocketClient>();
                 client = getClient;
 
                 // Setup loggingservice and ready event.
                 services.GetRequiredService<LoggingService>();
 
-                await client.LoginAsync(TokenType.Bot, config["Token"]);
+                //await client.LoginAsync(TokenType.Bot, config["Token"]);
+                await client.LoginAsync(TokenType.Bot, confBuilder.BotToken, true);
                 await client.StartAsync();
 
                 // Get the command handler class here.
@@ -96,6 +114,7 @@ namespace DevNet
                 .AddSingleton<CommandHandler>()
                 .AddSingleton<LoggingService>()
                 .AddSingleton<InteractiveService>()
+                .AddSingleton<ConfigurationBuilders>()
                 .AddLogging(configure => configure.AddSerilog());
 
             var serviceProvider = services.BuildServiceProvider();
