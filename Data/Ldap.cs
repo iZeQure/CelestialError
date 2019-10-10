@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Text;
@@ -18,22 +19,22 @@ namespace DevNet.Data
         /// <summary>
         /// The domain name
         /// </summary>
-        private string domainName = $"ldap.efif.dk";
+        private string domainName = ConfigurationManager.AppSettings["LdapDomainName"];
 
         /// <summary>
         /// The directory
         /// </summary>
-        private string directory = $"OU=ZBC,OU=UserAccounts,DC=efif,DC=dk";
+        private string directory = ConfigurationManager.AppSettings["LdapDirectory"];
 
         /// <summary>
         /// The authentication username
         /// </summary>
-        private string authUsername = $"zbc-maskinnavn";
+        private string authUsername = ConfigurationManager.AppSettings["LdapAuthUser"];
 
         /// <summary>
         /// The authentication password
         /// </summary>
-        private string authPassword = $"Zorro.b.c";
+        private string authPassword = ConfigurationManager.AppSettings["LdapAuthPass"];
 
         /// <summary>
         /// The principal context

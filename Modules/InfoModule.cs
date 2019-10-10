@@ -48,7 +48,9 @@ namespace DevNet.Modules
                     IGuild guild = Context.Guild;
                     // Debugging
                     //var user = await guild.GetUserAsync(151363325987389440);
-                    // Live
+                    // BOT ID
+                    //var user = await guild.GetUserAsync(Context.Client.CurrentUser.Id);
+                    // LIVE
                     var user = await guild.GetUserAsync(Context.User.Id);
 
                     if (userInformation != null && user != null)

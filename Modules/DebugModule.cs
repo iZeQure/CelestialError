@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using DevNet.Services;
 
 namespace DevNet.Modules
 {
@@ -13,6 +14,25 @@ namespace DevNet.Modules
     [RequireUserPermission(GuildPermission.Administrator)]
     public class DebugModule : InteractiveBase
     {
+        [Command("ldap")]
+        public async Task Debug_Ldap(string commonName)
+        {
+            LdapService ldap = new LdapService();
+
+            if (commonName != "" && commonName.Length != 0)
+            {
+                var getInfo = ldap.LdapConnection(commonName);
+                if (getInfo != null)
+                {
+                    await ReplyAsync($"Information: {getInfo[0]} {getInfo[1]}");
+                }
+            }
+            else
+            {
+                await ReplyAsync($"Missing parameter: Cannot be null.");
+            }
+        }
+
         [Command("debugPagination")]
         [Alias("dp")]
         [Summary("Command used for debugging commands for testing phases.")]
