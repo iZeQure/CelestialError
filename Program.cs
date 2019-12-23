@@ -53,34 +53,34 @@ namespace DevNet
         {
             IConfigurationBuilder builder = null;
 
-            try
-            {
-                builder = new ConfigurationBuilder()
-                        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                        .AddJsonFile(path: "./config.json");
+            //try
+            //{
+            //    builder = new ConfigurationBuilder()
+            //            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            //            .AddJsonFile(path: "./sonfig.json");
 
-                if (builder == null)
-                {
-                    try
-                    {
-                        builder = new ConfigurationBuilder().AddJsonFile(path: $"DevNet/config.json");
-                    }
-                    catch (FileNotFoundException ex)
-                    {
-                        Debug.WriteLine($"Build wasn't configurated with path : {ex.Message}");
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($" [ERROR] Unexpected Exception : {ex.Message}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($" [ERROR] Couldn't find config.json file : {ex.Message}");
-            }
+            //    if (builder == null)
+            //    {
+            //        try
+            //        {
+            //            builder = new ConfigurationBuilder().AddJsonFile(path: $"DevNet/config.json");
+            //        }
+            //        catch (FileNotFoundException ex)
+            //        {
+            //            Debug.WriteLine($"Build wasn't configurated with path : {ex.Message}");
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            Debug.WriteLine($" [ERROR] Unexpected Exception : {ex.Message}");
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.WriteLine($" [ERROR] Couldn't find config.json file : {ex.Message}");
+            //}
 
-            config = builder.Build();
+            //config = builder.Build();
 
             confBuilder = new ConfigurationBuilders
             {
