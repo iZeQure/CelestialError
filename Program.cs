@@ -24,6 +24,7 @@ namespace DevNet
         //internal static ConfigurationBuilders confBuilder;
 
         // Setup our fields
+        private ConfigurationBuilders builders;
         private DiscordSocketClient client;
         private static string logLevel;
 
@@ -81,13 +82,13 @@ namespace DevNet
 
             //config = builder.Build();
 
-            ConfigurationBuilders confBuilder = new ConfigurationBuilders
+            builders = new ConfigurationBuilders
             {
                 ConnString = ConfigurationManager.ConnectionStrings["CelestialError"]?.ConnectionString,
                 SmsMessageKey = ConfigurationManager.AppSettings["SmsMessageKey"],
                 BotToken = ConfigurationManager.AppSettings["DiscordBotToken"],
                 BotPrefix = ConfigurationManager.AppSettings["CommandPrefix"]
-            };            
+            };
         }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace DevNet
                 services.GetRequiredService<LoggingService>();
 
                 //await client.LoginAsync(TokenType.Bot, config["Token"]);
-                await client.LoginAsync(TokenType.Bot, ConfigurationManager.AppSettings["discordBotToken"], true);
+                await client.LoginAsync(TokenType.Bot, builders.BotToken, true);
                 await client.StartAsync();
 
                 // Get the command handler class here.
