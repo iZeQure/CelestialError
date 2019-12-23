@@ -12,6 +12,7 @@ using Discord.Addons.Interactive;
 using System.Configuration;
 using DevNet.Modules;
 using System.Diagnostics;
+using System.IO;
 
 namespace DevNet
 {
@@ -64,9 +65,13 @@ namespace DevNet
                     {
                         builder = new ConfigurationBuilder().AddJsonFile(path: $"DevNet/config.json");
                     }
-                    catch (Exception)
+                    catch (FileNotFoundException ex)
                     {
-                        Debug.WriteLine($" [ERROR] No Config File Found.");
+                        Debug.WriteLine($"Build wasn't configurated with path : {ex.Message}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($" [ERROR] Unexpected Exception : {ex.Message}");
                     }
                 }
             }
