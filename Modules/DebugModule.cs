@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using DevNet.Services;
+using Discord.WebSocket;
+using System.Linq;
+using System.Diagnostics;
 
 namespace DevNet.Modules
 {
@@ -14,7 +17,7 @@ namespace DevNet.Modules
     [RequireUserPermission(GuildPermission.Administrator)]
     public class DebugModule : InteractiveBase
     {
-        [Command("ldap")]
+        [Command("ldap", RunMode = RunMode.Async)]
         public async Task Debug_Ldap(string commonName)
         {
             LdapService ldap = new LdapService();
@@ -77,6 +80,49 @@ namespace DevNet.Modules
             {
                 await ReplyAsync($"You did no reply before the timeout.");
             }
+        }
+
+        [Command("channel", RunMode = RunMode.Async)]
+        public async Task CreateCustomChannelAsync(string channelName, int channelMaxEntries)
+        {
+            IGuild guild = Context.Guild;
+            IUserMessage msg = Context.Message;
+            IChannel channel = Context.Channel;
+
+            TimeSpan channelTimer = TimeSpan.FromMinutes(2);
+
+            var channels = await guild.GetChannelsAsync();
+            var targetChannel = channels.FirstOrDefault(target => target.Name == "create-new-channel");
+
+            if (channel.Name != targetChannel.Name)
+            {
+                await Context.Channel.DeleteMessageAsync(msg);
+                return;
+            }
+
+            var categories = await guild.GetCategoriesAsync();
+            var targetCategory = categories.FirstOrDefault(target => target.Name == "CustomChannel");
+
+            if (targetCategory == null) return;
+
+            var createVoiceChannel = await guild.CreateVoiceChannelAsync(channelName, properties =>
+            {
+                properties.CategoryId = targetCategory.Id;
+                properties.UserLimit = channelMaxEntries;
+            });
+
+            await DeleteMessageAfterCommand(msg);
+        }
+
+        public async Task DeleteMessageAfterCommand(IUserMessage msg)
+        {
+            var getMessages = await msg.Channel.GetMessagesAsync(1).FlattenAsync();
+
+            foreach (IUserMessage message in getMessages)
+            {
+                await message.DeleteAsync();
+            }
+            await Task.CompletedTask;
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.DirectoryServices;
 using System.DirectoryServices.AccountManagement;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DevNet.Data
 {
@@ -111,7 +113,22 @@ namespace DevNet.Data
         /// </summary>
         private Ldap()
         {
-            GetPrincipalContext = new PrincipalContext(ContextType.Domain, DomainName, Directory, AuthUsername, AuthPassword);
+            try
+            {
+
+                GetPrincipalContext = new PrincipalContext(ContextType.Domain, DomainName, Directory, ContextOptions.SimpleBind, AuthUsername, AuthPassword);
+
+            }
+            catch (PrincipalServerDownException ex)
+            {
+                Debug.WriteLine($"Server Down for {DomainName} ~ {ex.Message}");
+                DomainName = ConfigurationManager.AppSettings["LdapIPAddress"];
+                GetPrincipalContext = new PrincipalContext(ContextType.Domain, DomainName, Directory, ContextOptions.SimpleBind, AuthUsername, AuthPassword);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected Exception: {ex.Message}");
+            }
         }
 
         /// <summary>

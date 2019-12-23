@@ -30,11 +30,13 @@ namespace DevNet.Modules
             private JsonHandler jsonHandler = new JsonHandler();
             private LogMessage logMessage;
 
-            [Command("user")]
-            [Alias("usr")]
+            [Command("account")]
+            [Alias("konto", "acc")]
             [Summary("Register User with LDAP Information from AD.")]
             public async Task RegisterUserInformation(string userNickName)
             {
+                IGuild guild = Context.Guild;
+
                 jsonHandler.TokenName = "serverEmoji.heart.name";
                 jsonHandler.FilePath = "emoji.json";
 
@@ -44,13 +46,6 @@ namespace DevNet.Modules
                 try
                 {
                     userInformation = createQuery.GetUserInformationByNickName(userNickName);
-
-                    IGuild guild = Context.Guild;
-                    // Debugging
-                    //var user = await guild.GetUserAsync(151363325987389440);
-                    // BOT ID
-                    //var user = await guild.GetUserAsync(Context.Client.CurrentUser.Id);
-                    // LIVE
                     var user = await guild.GetUserAsync(Context.User.Id);
 
                     if (userInformation != null && user != null)
@@ -60,9 +55,6 @@ namespace DevNet.Modules
                             x.Nickname = $"{userInformation[0]} {userInformation[1]}";
                         });
 
-                        // Debugging
-                        //await Context.Channel.SendMessageAsync($"Debugging: Registered {userNickName} for {user.Nickname}. {jsonHandler.GetJsonToken()}");
-                        // Live
                         await Context.Channel.SendMessageAsync($"Successfully registered {userNickName} for {Context.User.Mention}. {jsonHandler.GetJsonToken()}");
                     }
                     else
@@ -71,26 +63,6 @@ namespace DevNet.Modules
                         return;
                     }
                 }
-                catch (NullReferenceException ex)
-                {
-                    logMessage = new LogMessage(
-                        LogSeverity.Error,
-                        ex.Message,
-                        $"Source: {ex.Source} => {ex.InnerException}"
-                    );
-
-                    await Context.Channel.SendMessageAsync($"Could not process command.. make sure you have internet or try again later.");
-                }
-                catch (HttpException ex)
-                {
-                    Debug.WriteLine(logMessage = new LogMessage(
-                        LogSeverity.Error,
-                        ex.Message,
-                        $"Code: {ex.HttpCode} => {ex.Data}."
-                    ));
-
-                    await Context.Channel.SendMessageAsync($"Could not process command.. make sure you have internet or try again later.");
-                }
                 catch (Exception ex)
                 {
                     logMessage = new LogMessage(
@@ -98,8 +70,7 @@ namespace DevNet.Modules
                         ex.Message,
                         $"Source: {ex.Source} => {ex.InnerException}"
                     );
-
-                    await Context.Channel.SendMessageAsync($"Unspecified Exception. Contact Developer.");
+                    return;
                 }
             }
         }

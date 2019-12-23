@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Discord.Commands;
 using Discord.Addons.Interactive;
 using System.Configuration;
+using DevNet.Modules;
 
 namespace DevNet
 {
@@ -71,6 +72,8 @@ namespace DevNet
         /// </returns>
         public async Task MainAsync()
         {
+            RoleModule roleModule = new RoleModule();
+
             using (ServiceProvider services = ConfigureServices())
             {
                 var socketConfig = new DiscordSocketConfig
@@ -81,6 +84,8 @@ namespace DevNet
 
                 var getClient = services.GetRequiredService<DiscordSocketClient>();
                 client = getClient;
+
+                client.UserJoined += roleModule.UserJoined;
 
                 // Setup loggingservice and ready event.
                 services.GetRequiredService<LoggingService>();
