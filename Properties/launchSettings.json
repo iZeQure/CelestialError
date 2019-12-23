@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DevNet": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "BotToken": "NjIwODkxODkyNDc2OTM2MTky.XgEXQw.0RLQF5eLx7dUn2dPGSkbRhNh7k0"
+      }
+    }
+  }
+}

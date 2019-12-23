@@ -51,43 +51,15 @@ namespace DevNet
         /// </summary>
         public Program()
         {
-            //IConfigurationBuilder builder = null;
-
-            //try
-            //{
-            //    builder = new ConfigurationBuilder()
-            //            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            //            .AddJsonFile(path: "./sonfig.json");
-
-            //    if (builder == null)
-            //    {
-            //        try
-            //        {
-            //            builder = new ConfigurationBuilder().AddJsonFile(path: $"DevNet/config.json");
-            //        }
-            //        catch (FileNotFoundException ex)
-            //        {
-            //            Debug.WriteLine($"Build wasn't configurated with path : {ex.Message}");
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            Debug.WriteLine($" [ERROR] Unexpected Exception : {ex.Message}");
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.WriteLine($" [ERROR] Couldn't find config.json file : {ex.Message}");
-            //}
-
-            //config = builder.Build();
+            IConfiguration config = new ConfigurationBuilder()
+            .AddJsonFile("config.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
 
             builders = new ConfigurationBuilders
             {
                 ConnString = ConfigurationManager.ConnectionStrings["CelestialError"]?.ConnectionString,
-                SmsMessageKey = ConfigurationManager.AppSettings["SmsMessageKey"],
-                BotToken = ConfigurationManager.AppSettings["DiscordBotToken"],
-                BotPrefix = ConfigurationManager.AppSettings["CommandPrefix"]
+                SmsMessageKey = ConfigurationManager.AppSettings["SmsMessageKey"]
             };
         }
 
@@ -118,7 +90,7 @@ namespace DevNet
                 services.GetRequiredService<LoggingService>();
 
                 //await client.LoginAsync(TokenType.Bot, config["Token"]);
-                await client.LoginAsync(TokenType.Bot, "NjIwODkxODkyNDc2OTM2MTky.XgEWqw.X87sm6oF4O6MXUv23z5ikDctyy4", true);
+                await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("BotToken"), true);
                 await client.StartAsync();
 
                 // Get the command handler class here.
@@ -127,7 +99,7 @@ namespace DevNet
 
                 // Create a task, that completes after a delay.
                 // -1 to wait indefinitely.
-                await Task.Delay(-1); 
+                await Task.Delay(-1);
             }
         }
 
