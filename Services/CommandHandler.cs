@@ -67,7 +67,7 @@ namespace DevNet.Services
 
             // Get Prefix from the configuration file.
             //char prefix = char.Parse(config["Prefix"]);
-            char prefix = char.Parse(builders.BotPrefix);
+            char prefix = char.Parse("!");
 
             // Determine if the message has a valid prefix, and adjust argPos based on Prefix.
             if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasCharPrefix(prefix, ref argPos)))
