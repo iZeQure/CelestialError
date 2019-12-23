@@ -6,6 +6,7 @@
 # Custom Configurations
 App.config
 config.json
+Program.cs
 
 # User-specific files
 *.rsuser
