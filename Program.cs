@@ -11,6 +11,7 @@ using Discord.Commands;
 using Discord.Addons.Interactive;
 using System.Configuration;
 using DevNet.Modules;
+using System.Diagnostics;
 
 namespace DevNet
 {
@@ -49,9 +50,30 @@ namespace DevNet
         /// </summary>
         public Program()
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile(path: "./config.json");
+            IConfigurationBuilder builder = null;
+
+            try
+            {
+                builder = new ConfigurationBuilder()
+                        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                        .AddJsonFile(path: "./config.json");
+
+                if (builder == null)
+                {
+                    try
+                    {
+                        builder = new ConfigurationBuilder().AddJsonFile(path: $"DevNet/config.json");
+                    }
+                    catch (Exception)
+                    {
+                        Debug.WriteLine($" [ERROR] No Config File Found.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($" [ERROR] Couldn't find config.json file : {ex.Message}");
+            }
 
             config = builder.Build();
 
