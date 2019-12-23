@@ -5,7 +5,7 @@
 
 # Custom Configurations
 config.json
-.env
+launchSettings.json
 
 # User-specific files
 *.rsuser
