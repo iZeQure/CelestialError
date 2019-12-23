@@ -67,7 +67,7 @@ namespace DevNet
         /// Starts discord client.
         /// </summary>
         /// <returns>
-        /// returns nothing, awaiting commands to be executed.
+        /// returns nothing, awaiting commands to be executed. 
         /// </returns>
         public async Task MainAsync()
         {
