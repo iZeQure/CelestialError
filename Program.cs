@@ -51,7 +51,7 @@ namespace DevNet
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile(path: "~/config.json");
+                .AddJsonFile(path: "./config.json");
 
             config = builder.Build();
 
