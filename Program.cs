@@ -86,7 +86,7 @@ namespace DevNet
 
                 client.UserJoined += roleModule.UserJoined;
 
-                // Setup loggingservice and ready event.
+                // Setup loggingservice and ready event. 
                 services.GetRequiredService<LoggingService>();
 
                 //await client.LoginAsync(TokenType.Bot, config["Token"]);
