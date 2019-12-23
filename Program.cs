@@ -90,7 +90,9 @@ namespace DevNet
                 services.GetRequiredService<LoggingService>();
 
                 //await client.LoginAsync(TokenType.Bot, config["Token"]);
-                await client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("BotToken"), true);
+                var tok = Environment.GetEnvironmentVariable("BotToken");
+                Console.WriteLine(tok);
+                await client.LoginAsync(TokenType.Bot, token: tok, true);
                 await client.StartAsync();
 
                 // Get the command handler class here.
