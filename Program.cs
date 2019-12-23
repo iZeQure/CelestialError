@@ -21,10 +21,9 @@ namespace DevNet
     /// </summary>
     public class Program
     {
-        internal static ConfigurationBuilders confBuilder;
+        //internal static ConfigurationBuilders confBuilder;
 
         // Setup our fields
-        private readonly IConfiguration config;
         private DiscordSocketClient client;
         private static string logLevel;
 
@@ -51,7 +50,7 @@ namespace DevNet
         /// </summary>
         public Program()
         {
-            IConfigurationBuilder builder = null;
+            //IConfigurationBuilder builder = null;
 
             //try
             //{
@@ -82,7 +81,7 @@ namespace DevNet
 
             //config = builder.Build();
 
-            confBuilder = new ConfigurationBuilders
+            ConfigurationBuilders confBuilder = new ConfigurationBuilders
             {
                 ConnString = ConfigurationManager.ConnectionStrings["CelestialError"]?.ConnectionString,
                 SmsMessageKey = ConfigurationManager.AppSettings["SmsMessageKey"],
@@ -118,7 +117,7 @@ namespace DevNet
                 services.GetRequiredService<LoggingService>();
 
                 //await client.LoginAsync(TokenType.Bot, config["Token"]);
-                await client.LoginAsync(TokenType.Bot, confBuilder.BotToken, true);
+                await client.LoginAsync(TokenType.Bot, ConfigurationManager.AppSettings["discordBotToken"], true);
                 await client.StartAsync();
 
                 // Get the command handler class here.
@@ -140,7 +139,6 @@ namespace DevNet
         private ServiceProvider ConfigureServices()
         {
             var services = new ServiceCollection()
-                .AddSingleton(config)
                 .AddSingleton<DiscordSocketClient>()
                 .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandler>()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Reflection;
 using System.Threading.Tasks;
 using Discord;
@@ -13,7 +14,6 @@ namespace DevNet.Services
     public class CommandHandler
     {
         // Setip fields to bet se inside the constructor.
-        private readonly IConfiguration config;
         private readonly CommandService commands;
         private readonly DiscordSocketClient client;
         private readonly IServiceProvider iServices;
@@ -22,7 +22,6 @@ namespace DevNet.Services
         public CommandHandler(IServiceProvider services)
         {
             // Juice up the fields with Dependecy Injection services.
-            config = services.GetRequiredService<IConfiguration>();
             commands = services.GetRequiredService<CommandService>();
             client = services.GetRequiredService<DiscordSocketClient>();
             logger = services.GetRequiredService<ILogger<CommandHandler>>();
@@ -65,7 +64,8 @@ namespace DevNet.Services
             var argPos = 0;
 
             // Get Prefix from the configuration file.
-            char prefix = char.Parse(config["Prefix"]);
+            //char prefix = char.Parse(config["Prefix"]);
+            char prefix = char.Parse(ConfigurationManager.AppSettings["commandPrefix"]);
 
             // Determine if the message has a valid prefix, and adjust argPos based on Prefix.
             if (!(message.HasMentionPrefix(client.CurrentUser, ref argPos) || message.HasCharPrefix(prefix, ref argPos)))
