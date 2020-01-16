@@ -26,7 +26,7 @@ namespace DevNet
         // Setup our fields
         private ConfigurationBuilders builders;
         private DiscordSocketClient client;
-        private static string logLevel;
+        private static string _logLevel;
 
         /// <summary>
         /// Initializing Client 
@@ -36,7 +36,7 @@ namespace DevNet
         {
             if (args.Count() != 0)
             {
-                logLevel = args[0];
+                _logLevel = args[0];
             }
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.File("logs/devnet.log", rollingInterval: RollingInterval.Day)
@@ -73,34 +73,33 @@ namespace DevNet
         {
             RoleModule roleModule = new RoleModule();
 
-            using (ServiceProvider services = ConfigureServices())
+            using ServiceProvider services = ConfigureServices();
+
+            var socketConfig = new DiscordSocketConfig
             {
-                var socketConfig = new DiscordSocketConfig
-                {
-                    ExclusiveBulkDelete = true
-                };
-                client = new DiscordSocketClient(socketConfig);
+                ExclusiveBulkDelete = true
+            };
+            client = new DiscordSocketClient(socketConfig);
 
-                var getClient = services.GetRequiredService<DiscordSocketClient>();
-                client = getClient;
+            DiscordSocketClient getClient = services.GetRequiredService<DiscordSocketClient>();
+            client = getClient;
 
-                client.UserJoined += roleModule.UserJoined;
+            client.UserJoined += roleModule.UserJoined;
 
-                // Setup loggingservice and ready event. 
-                services.GetRequiredService<LoggingService>();
+            // Setup loggingservice and ready event. 
+            services.GetRequiredService<LoggingService>();
 
-                //await client.LoginAsync(TokenType.Bot, config["Token"]);
-                await client.LoginAsync(TokenType.Bot, token: $"{Environment.GetEnvironmentVariable("BotToken")}", true);
-                await client.StartAsync();
+            //await client.LoginAsync(TokenType.Bot, config["Token"]);
+            await client.LoginAsync(TokenType.Bot, token: $"{Environment.GetEnvironmentVariable("BotToken")}", true);
+            await client.StartAsync();
 
-                // Get the command handler class here.
-                // Initialize async method to start things up.
-                await services.GetRequiredService<CommandHandler>().InitializeAsync();
+            // Get the command handler class here.
+            // Initialize async method to start things up.
+            await services.GetRequiredService<CommandHandler>().InitializeAsync();
 
-                // Create a task, that completes after a delay.
-                // -1 to wait indefinitely.
-                await Task.Delay(-1);
-            }
+            // Create a task, that completes after a delay.
+            // -1 to wait indefinitely.
+            await Task.Delay(-1);
         }
 
         /// <summary>

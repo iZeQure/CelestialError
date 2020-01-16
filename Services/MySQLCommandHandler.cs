@@ -6,7 +6,7 @@ using DevNet.Data;
 
 namespace DevNet.Services
 {
-    public class MySQLCommandHandler : IDisposable
+    public class MySQLCommandHandler
     {
         private readonly Database db = Database.Instance;
         private MySqlCommand mySqlCommand;

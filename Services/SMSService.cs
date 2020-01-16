@@ -26,7 +26,7 @@ namespace DevNet.Services
 
         public void SendSms(string receiver, string message)
         {
-            string sendJsonRequest = webClient.DownloadString($"{RequestType}data.efif.dk/JSON/SMS.ashx?key={SmsKey}&receivers={receiver}&message={message}");
+            webClient.DownloadString($"{RequestType}data.efif.dk/JSON/SMS.ashx?key={SmsKey}&receivers={receiver}&message={message}");
         }
     }
 }

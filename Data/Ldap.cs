@@ -12,7 +12,7 @@ namespace DevNet.Data
     /// <summary>
     /// Get's instance of Ldap Base.
     /// </summary>
-    public sealed class Ldap
+    public sealed class Ldap : IDisposable
     {
         private static Ldap instance = new Ldap();
         private static readonly object ldapLock = new object();
@@ -115,9 +115,7 @@ namespace DevNet.Data
         {
             try
             {
-
                 GetPrincipalContext = new PrincipalContext(ContextType.Domain, DomainName, Directory, ContextOptions.SimpleBind, AuthUsername, AuthPassword);
-
             }
             catch (PrincipalServerDownException ex)
             {
@@ -152,20 +150,17 @@ namespace DevNet.Data
             }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Ldap"/> class.
-        /// </summary>
-        /// <param name="domainName">Name of the domain.</param>
-        /// <param name="directory">The directory.</param>
-        /// <param name="authUsername">The authentication username.</param>
-        /// <param name="authPassword">The authentication password.</param>
-        //public Ldap(string domainName, string directory, string authUsername, string authPassword)
-        //{
-        //    DomainName = domainName;
-        //    Directory = directory;
-        //    AuthUsername = authUsername;
-        //    AuthPassword = authPassword;
-        //}
+        public void Dispose()
+        {
+            try
+            {
+                GetPrincipalContext.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Could not dispose LDAP Object : {ex.Message}");
+            }
+        }
         #endregion
     }
 }

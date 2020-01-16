@@ -1,11 +1,6 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
-using System.Threading;
 
 namespace DevNet.Services
 {
@@ -14,17 +9,37 @@ namespace DevNet.Services
     /// </summary>
     public class JsonHandler
     {
-        // Attributes
+        #region Attributes        
+        /// <summary>
+        /// The token name
+        /// </summary>
         private string tokenName;
-        private string filePath;
 
-        // Properties
+        /// <summary>
+        /// The file path
+        /// </summary>
+        private string filePath;
+        #endregion
+
+        #region Properties        
+        /// <summary>
+        /// Gets or sets the name of the token.
+        /// </summary>
+        /// <value>
+        /// The name of the token.
+        /// </value>
         public string TokenName
         {
             get { return tokenName; }
             set { tokenName = value; }
         }
 
+        /// <summary>
+        /// Gets or sets the file path.
+        /// </summary>
+        /// <value>
+        /// The file path.
+        /// </value>
         public string FilePath
         {
             get
@@ -32,7 +47,8 @@ namespace DevNet.Services
                 return filePath;
             }
             set { filePath = value; }
-        }
+        } 
+        #endregion
 
         /// <summary>
         /// Get Json Token

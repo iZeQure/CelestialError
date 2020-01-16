@@ -10,8 +10,12 @@ using MySql.Data.MySqlClient;
 namespace DevNet.Data
 {
     /// <summary>
-    /// 
+    /// Creates a Database Connection,
+    /// of <see cref="MySqlConnection"/>.
     /// </summary>
+    /// <remarks>
+    /// This Class is using Singleton Pattern.
+    /// </remarks>
     /// <seealso cref="DevNet.Interfaces.IDatabase" />
     public class Database : IDatabase
     {
@@ -67,23 +71,7 @@ namespace DevNet.Data
             }
         }
 
-        public void OpenConnection()
-        {
-            try
-            {
-                MySqlConn.Open();
-            }
-            catch (MySqlException mySqlExceptionMessage)
-            {
-                Debug.WriteLine($" ################################# Could not Open Connection: {mySqlExceptionMessage.Message} [{mySqlExceptionMessage.Number}]");
-            }
-            catch (Exception exceptionMessage)
-            {
-                Debug.WriteLine($" ################################# Undefined Exception: {exceptionMessage.Message} [{exceptionMessage.HelpLink}]");
-            }
-        }
-
-        public void CloseConnection()
+        public void Dispose()
         {
             try
             {
@@ -101,6 +89,22 @@ namespace DevNet.Data
             {
                 if (MySqlConn != null)
                     MySqlConn.Dispose();
+            }
+        }
+
+        public void Open()
+        {
+            try
+            {
+                MySqlConn.Open();
+            }
+            catch (NullReferenceException ex)
+            {
+                Debug.WriteLine($"Object Reference : {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Unexpected Unhandles Exception Occured: {ex.Message}");
             }
         }
     }

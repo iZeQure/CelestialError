@@ -1,64 +1,73 @@
-﻿using System;
-using System.Data;
-using System.Text;
-using System.Collections.Generic;
+﻿using System.Data;
 using System.Diagnostics;
 using MySql.Data.MySqlClient;
 using DevNet.Services;
-using DevNet.Data;
-using DevNet.Interfaces;
+using System;
 
 namespace DevNet.Data
 {
+    /// <summary>
+    /// MySql Query Data Layer Class.
+    /// </summary>
+    /// <remarks>
+    /// Creates queries to write, read, update data, inside the database.
+    /// </remarks>
     public class MySQLQuery
     {
-        private readonly Database instance = Database.Instance;
-        private readonly MySQLCommandHandler mySQLCommandHandler = new MySQLCommandHandler();
-        private readonly JsonHandler jsonHandler = new JsonHandler();
+        private readonly Database db = Database.Instance; // Get Database Instance.
+        private readonly MySQLCommandHandler mySQLCommandHandler = new MySQLCommandHandler(); // Get Command Handler Object.
+        private readonly JsonHandler jsonHandler = new JsonHandler(); // Get Json Configuration.
 
+        /// <summary>
+        /// Gets the name of the user information by nick.
+        /// </summary>
+        /// <param name="uniUser">The uni user.</param>
+        /// <returns>
+        /// String Array of user information.
+        /// </returns>
         public string[] GetUserInformationByNickName(string uniUser)
         {
-            using (instance.MySqlConn)
+            using (db.MySqlConn)
             {
-                instance.OpenConnection();
+                db.Open();
 
                 try
                 {
-                    jsonHandler.TokenName = "GetUserInfo";
-                    jsonHandler.FilePath = "query.json";
+                    jsonHandler.TokenName = "GetUserInfo"; // Define Stored Procedure Token.
+                    jsonHandler.FilePath = "query.json"; // Define Path for file.
 
-                    string rtn = jsonHandler.GetJsonToken();
+                    using MySqlCommand getUserInformationCommand = mySQLCommandHandler.InitMySqlCommand(jsonHandler.TokenName);
+                    Debug.WriteLine($"User Information Command Information : {getUserInformationCommand}");
 
-                    using (MySqlCommand getUserInformationCommand = mySQLCommandHandler.InitMySqlCommand(rtn))
+                    getUserInformationCommand.CommandType = CommandType.StoredProcedure;
+                    getUserInformationCommand.Parameters.AddWithValue($"@uniUserName", uniUser);
+
+                    // Read data, from executed command.
+                    using (MySqlDataReader reader = getUserInformationCommand.ExecuteReader())
                     {
-                        getUserInformationCommand.CommandType = CommandType.StoredProcedure;
-                        getUserInformationCommand.Parameters.AddWithValue($"@uniUserName", uniUser);
-
-                        using (MySqlDataReader reader = getUserInformationCommand.ExecuteReader())
+                        try
                         {
-                            try
+                            while (reader.Read())
                             {
-                                while (reader.Read())
-                                {
-                                    string fName = reader.GetString(0);
-                                    string lName = reader.GetString(1);
+                                string fName = reader.GetString(0);
+                                string lName = reader.GetString(1);
 
-                                    string[] getUserInformation = new string[] { fName, lName };
+                                string[] getUserInformation = new string[] { fName, lName };
 
-                                    return getUserInformation;
-                                }
-                            }
-                            finally
-                            {
-                                if (reader != null)
-                                {
-                                    reader.Close();
-                                    reader.Dispose();
-                                }
+                                // Return User Infromation.
+                                return getUserInformation;
                             }
                         }
-                        mySQLCommandHandler.Dispose();
+                        finally
+                        {
+                            if (reader != null)
+                            {
+                                reader.Close();
+                                reader.Dispose();
+                            }
+                        }
                     }
+                    mySQLCommandHandler.Dispose();
                 }
                 catch (MySqlException mySqlExceptionMsg)
                 {
@@ -66,11 +75,7 @@ namespace DevNet.Data
                 }
                 finally
                 {
-                    if (instance.MySqlConn != null)
-                    {
-                        instance.CloseConnection();
-                        instance.MySqlConn.Dispose();
-                    }
+                    db.Dispose();
                 }
             }
             return null;

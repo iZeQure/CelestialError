@@ -5,6 +5,10 @@ using System.Text;
 
 namespace DevNet.Data
 {
+    /// <summary>
+    /// Creates a message, with a given request type.
+    /// </summary>
+    /// <see cref="RequestType"/>
     public class Message
     {
         #region Attributes

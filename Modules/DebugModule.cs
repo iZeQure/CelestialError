@@ -24,7 +24,7 @@ namespace DevNet.Modules
 
             if (commonName != "" && commonName.Length != 0)
             {
-                var getInfo = ldap.LdapConnection(commonName);
+                var getInfo = ldap.GetLDAPUserInformationByCommonName(commonName);
                 if (getInfo != null)
                 {
                     await ReplyAsync($"Information: {getInfo[0]} {getInfo[1]}");

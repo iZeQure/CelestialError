@@ -4,9 +4,8 @@ using System.Text;
 
 namespace DevNet.Interfaces
 {
-    public interface IDatabase
+    public interface IDatabase: IDisposable
     {
-        void OpenConnection();
-        void CloseConnection();
+        void Open();
     }
 }

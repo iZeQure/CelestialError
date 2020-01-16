@@ -11,9 +11,9 @@ namespace DevNet.Services
     {        
         private UserPrincipal userPrincipal;
         private PrincipalSearcher searchUser;
-        string[] userInfo = new string[2];
+        private readonly string[] userInfo = new string[] { };
 
-        public string[] LdapConnection(string commonName)
+        public string[] GetLDAPUserInformationByCommonName(string commonName)
         {
             Ldap ldap = Ldap.Instance;
 
@@ -42,21 +42,7 @@ namespace DevNet.Services
             }
             finally
             {
-                //if (ctx != null)
-                //{
-                //    ctx.Dispose();
-                //    Debug.WriteLine($"Disposed: Context");
-                //}
-                //if (userPrincipal != null)
-                //{
-                //    userPrincipal.Dispose();
-                //    Debug.WriteLine($"Disposed: User Principal.");
-                //}
-                //if (searchUser != null)
-                //{
-                //    searchUser.Dispose();
-                //    Debug.WriteLine($"Disposed: Search User.");
-                //}
+                ctx.Dispose();
             }
             return userInfo;
         }
